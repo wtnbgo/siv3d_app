@@ -29,5 +29,15 @@
   "macos": {
     "icon": "icon/icon.icns",
     "package": ["zip"]
+  },
+  "web": {
+    "port": 8080,
+    "package": ["zip"]
+  },
+  "android": {
+    "applicationId": "com.example.myapp",
+    "versionCode": 1,
+    "abis": ["arm64-v8a", "x86_64"],
+    "package": ["apk"]
   }
 }

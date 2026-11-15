@@ -60,6 +60,8 @@ make windows         # Windows 版 (Windows で)
 make macos           # macOS 版 (macOS で)
 make linux           # Linux 版 (sniper SDK のコンテナでビルド)
 make linux NATIVE=1  # Linux 版をホストで直接ビルド (Linux で。出力は build/linux-native)
+make web             # Web 版 (どのホストでも。emsdk が必要)
+make android         # Android 版 (どのホストでも。Android SDK / NDK と外枠 siv3d_and が必要)
 make run             # stage した実行ファイルを起動
 make build CONFIG=Debug
 make clean TARGET=windows
@@ -80,11 +82,14 @@ cmake --build build/dev --config Release
 
 | ホスト | 作れる機種 |
 |---|---|
-| Windows | windows、linux (docker または wslc のコンテナ) |
-| Linux | linux (コンテナ、または `NATIVE=1` でホストのコンパイラ) |
-| macOS | macos、linux (docker のコンテナ) |
+| Windows | windows、web、android、linux (docker または wslc のコンテナ) |
+| Linux | linux (コンテナ、または `NATIVE=1` でホストのコンパイラ)、web、android |
+| macOS | macos、web、android、linux (docker のコンテナ)、ios (対応中) |
 
-Web / Android / iOS は今後対応予定です。
+- Web: 環境変数 `EMSDK` (emsdk のフォルダ)。出力は `<exeName>.html` / `.js` / `.wasm` / `.data`。配信には COOP/COEP ヘッダが必要
+  (`make run TARGET=web` で確認用サーバを起動。詳しくは OpenSiv3D の `SDL3/BUILD-Web.md`)
+- Android: 外枠 [siv3d_and](https://github.com/wtnbgo/siv3d_and) を OpenSiv3D の隣に clone する (または環境変数 `SIV3D_ANDROID`)。
+  `ANDROID_HOME` / `JAVA_HOME` / `VCPKG_ROOT` が必要。出力は `<exeName>.apk`
 
 ## パッケージ定義 (`siv3d-app.json`)
 

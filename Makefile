@@ -2,8 +2,8 @@
 # Siv3D (SDL3 版) アプリのビルド (tools/siv3d_app.py の薄いラッパ)
 #
 #   make                 実行中の OS 向けに build + stage + package
-#   make windows|linux|macos   指定した機種向けに build + stage + package
-#   make build|stage|package|run|clean|info [TARGET=windows|linux|macos] [CONFIG=Release|Debug]
+#   make windows|linux|macos|web|android   指定した機種向けに build + stage + package
+#   make build|stage|package|run|clean|info [TARGET=windows|linux|macos|web|android] [CONFIG=Release|Debug]
 #   make linux NATIVE=1  Linux ホストでコンテナを使わずにビルド
 # -----------------------------------------------------------------------------
 
@@ -22,12 +22,12 @@ CONFIG ?= Release
 DRIVER := $(PYTHON) $(SIV3D_BASE)/tools/siv3d_app.py --project . --config $(CONFIG) $(if $(NATIVE),--native,)
 TARGET_OPT := $(if $(TARGET),--target $(TARGET),)
 
-.PHONY: default windows linux macos build stage package run clean info
+.PHONY: default windows linux macos web android build stage package run clean info
 
 default:
 	$(DRIVER) $(TARGET_OPT) all
 
-windows linux macos:
+windows linux macos web android:
 	$(DRIVER) --target $@ all
 
 build stage package run clean info:
