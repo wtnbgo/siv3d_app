@@ -1,0 +1,33 @@
+{
+  "name": "My App",
+  "exeName": "MyApp",
+  "version": "1.0.0",
+  "bundleId": "com.example.myapp",
+  "company": "",
+  "copyright": "",
+
+  "assets": [
+    { "from": "assets", "to": "assets" }
+  ],
+
+  "cmake": {
+    "options": {
+      "SIV3D_WITH_MOVIEPLAYER": "ON",
+      "SIV3D_WITH_FFMPEG": "ON"
+    }
+  },
+
+  "windows": {
+    "console": false,
+    "icon": "icon/icon.ico",
+    "package": ["zip"]
+  },
+  "linux": {
+    "container": "deckbuild-sniper",
+    "package": ["tar.gz"]
+  },
+  "macos": {
+    "icon": "icon/icon.icns",
+    "package": ["zip"]
+  }
+}
