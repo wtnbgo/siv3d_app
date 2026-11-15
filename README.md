@@ -59,7 +59,7 @@ make                 # 実行中の OS 向けに build + stage + package
 make windows         # Windows 版 (Windows で)
 make macos           # macOS 版 (macOS で)
 make linux           # Linux 版 (sniper SDK のコンテナでビルド)
-make linux NATIVE=1  # Linux 版をホストで直接ビルド (Linux で)
+make linux NATIVE=1  # Linux 版をホストで直接ビルド (Linux で。出力は build/linux-native)
 make run             # stage した実行ファイルを起動
 make build CONFIG=Debug
 make clean TARGET=windows
