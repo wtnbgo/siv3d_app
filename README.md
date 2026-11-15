@@ -101,6 +101,7 @@ Web / Android / iOS は今後対応予定です。
 | `windows.icon` / `macos.icon` | アイコンファイル (`.ico` / `.icns`) |
 | `linux.container` | Linux 版のビルドに使うコンテナイメージ (既定 `deckbuild-sniper`) |
 | `linux.engine` | コンテナの実行に使うコマンド `auto` / `docker` / `wslc` / `podman` (既定 `auto`: docker のデーモンが動いていれば docker、Windows で動いていなければ wslc) |
+| `macos.sign` | 署名に使う ID。既定 `"-"` (ad-hoc 署名。Apple Silicon では署名が無いと起動できない)。配布用は `"Developer ID Application: ..."`、`false` で署名しない |
 | `<機種>.package` | 配布物の形式の配列: `zip` / `tar.gz` / `dir` |
 
 アセットはカレントディレクトリ (実行ファイルのフォルダ。macOS は `.app/Contents/MacOS`) からの相対パスで読み込みます。
@@ -116,4 +117,9 @@ const Texture texture{ U"assets/windmill.png" };
   (`SIV3D_WITH_FFMPEG=ON` のとき) FFmpeg の `.so` と `licenses/`
 - macOS: `MyApp.app` (ANGLE の dylib を `Contents/Frameworks` に、リソースとアセットを `Contents/MacOS` に同梱)
 
-コード署名 (Windows の Authenticode、macOS の codesign / 公証) はまだ行いません。
+macOS は stage のときに `.app` を署名します (既定は ad-hoc 署名)。ad-hoc 署名や未公証の `.app` は、
+ダウンロードした zip から展開すると Gatekeeper に止められるので、一般に配布するには Developer ID での署名と公証が必要です
+(公証はまだドライバで行いません)。Windows の Authenticode 署名も未対応です。
+
+テンプレートのビルドは OpenSiv3D 一式をアプリのビルドツリー (`build/<機種>/cmake`) でビルドするため、
+1 機種あたり数 GB のディスクを使います。
