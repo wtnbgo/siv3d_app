@@ -26,9 +26,10 @@ Siv3D のエンジンが同梱するフォント (`resources/engine/font/`) の�
 |---|---|
 | `font-awesome.txt` | Font Awesome Free (アイコンフォント。フォントは SIL OFL 1.1、アイコンは CC BY 4.0) |
 | `mplus.txt` | M+ FONTS |
-| `noto-sans-cjk.txt` | Noto Sans CJK / Noto Sans JP (SIL OFL 1.1。同梱の LICENSE に無い著作権表示は元のリポジトリの表記を補った) |
+| `noto-sans-cjk.txt` | Noto Sans CJK / Noto Sans JP (SIL OFL 1.1。同梱の LICENSE に無い著作権表示は元のリポジトリの表記を補った)。`min/siv3d-min.woff` も含む |
 
 - Noto Emoji と Material Design Icons は、エンジンの内蔵の一覧に入っています。
-- 日本語のフォールバック用の `resources/engine/font/min/siv3d-min.woff` は、同梱の LICENSE が SIL OFL 1.1 ですが、
-  元のフォントと著作権者の記載がないため、ここには置いていません。
+- 予備のフォント `resources/engine/font/min/siv3d-min.woff` は、Noto Sans JP 2.004 (© 2014-2021 Adobe) から英数字・記号など
+  198 文字を抜き出したもの (フォントの name テーブルで確認) なので、`noto-sans-cjk.txt` のライセンスに含まれます。
+  Noto Sans CJK / JP を外して `siv3d-min.woff` だけを残す場合も、`noto-sans-cjk.txt` は残してください。
 - 使わないフォントを `resources/engine/font/` から外した場合は、対応するファイルも消してかまいません。
