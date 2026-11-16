@@ -39,5 +39,12 @@
     "versionCode": 1,
     "abis": ["arm64-v8a", "x86_64"],
     "package": ["apk"]
+  },
+  "ios": {
+    "displayName": "My App",
+    "build": "1",
+    "deploymentTarget": "15.0",
+    "orientations": "landscape",
+    "team": ""
   }
 }

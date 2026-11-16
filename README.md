@@ -66,6 +66,9 @@ make linux           # Linux 版 (sniper SDK のコンテナでビルド)
 make linux NATIVE=1  # Linux 版をホストで直接ビルド (Linux で。出力は build/linux-native。配布物は *-linux-native.tar.gz で、配布用ではない)
 make web             # Web 版 (どのホストでも。emsdk が必要)
 make android         # Android 版 (どのホストでも。Android SDK / NDK と外枠 siv3d_and が必要)
+make ios             # iOS 版 (macOS で。シミュレータ向け。Xcode が必要)
+make ios-run         # iOS シミュレータにインストールして起動
+make ios-device      # iOS 実機 (arm64) 向け。ipa を作る (インストールには ios.team の署名が必要)
 make run             # stage した実行ファイルを起動
 make build CONFIG=Debug
 make clean TARGET=windows
@@ -88,7 +91,7 @@ cmake --build build/dev --config Release
 |---|---|
 | Windows | windows、web、android、linux (docker または wslc のコンテナ) |
 | Linux | linux (コンテナ、または `NATIVE=1` でホストのコンパイラ)、web、android |
-| macOS | macos、web、android、linux (docker のコンテナ)、ios (対応中) |
+| macOS | macos、ios (シミュレータ / 実機)、web、android、linux (docker のコンテナ) |
 
 - Web: 環境変数 `EMSDK` (emsdk のフォルダ)。出力は `<exeName>.html` / `.js` / `.wasm` / `.data`。配信には COOP/COEP ヘッダが必要
   (`make run TARGET=web` で確認用サーバを起動。詳しくは OpenSiv3D の `SDL3/BUILD-Web.md`)
@@ -96,6 +99,9 @@ cmake --build build/dev --config Release
   自動で保存され、次に開いたときに読み込まれる (`web.persist` を `false` にすると無効。カレントディレクトリ直下は保存されない)
 - Android: 外枠 [siv3d_and](https://github.com/wtnbgo/siv3d_and) を OpenSiv3D の隣に clone する (または環境変数 `SIV3D_ANDROID`)。
   `ANDROID_HOME` / `JAVA_HOME` / `VCPKG_ROOT` が必要。出力は `<exeName>.apk`
+- iOS: Xcode (iOS SDK とシミュレータのランタイム) が必要。CMake の Xcode ジェネレータでビルドし、出力は `build/ios/<simulator|device>-<arch>/`。
+  シミュレータはホストの CPU 向け (Intel Mac は x86_64)、実機は arm64。WebM (movie-player) は iOS では使えません。
+  詳しくは OpenSiv3D の `SDL3/BUILD-iOS.md`
 
 ## パッケージ定義 (`siv3d-app.json`)
 
@@ -112,6 +118,12 @@ cmake --build build/dev --config Release
 | `windows.icon` / `macos.icon` | アイコンファイル (`.ico` / `.icns`) |
 | `linux.container` | Linux 版のビルドに使うコンテナイメージ (既定 `deckbuild-sniper`) |
 | `linux.engine` | コンテナの実行に使うコマンド `auto` / `docker` / `wslc` / `podman` (既定 `auto`: docker のデーモンが動いていれば docker、Windows で動いていなければ wslc) |
+| `ios.displayName` / `ios.version` / `ios.build` | ホーム画面の名前、CFBundleShortVersionString / CFBundleVersion (省略時は `name` / `version` / `1`) |
+| `ios.bundleId` | iOS のバンドル ID (省略時はトップレベルの `bundleId`) |
+| `ios.deploymentTarget` | 対応する iOS の最低バージョン (既定 `15.0`) |
+| `ios.orientations` | 画面の向き: `"landscape"` (既定) / `"portrait"` / `"all"`、または `UIInterfaceOrientation*` の配列 |
+| `ios.deviceFamily` | `"1,2"` (iPhone と iPad、既定) / `"1"` / `"2"` |
+| `ios.team` | 実機の署名に使う Apple Developer の Team ID (シミュレータは不要) |
 | `macos.sign` | 署名に使う ID。既定 `"-"` (ad-hoc 署名。Apple Silicon では署名が無いと起動できない)。配布用は `"Developer ID Application: ..."`、`false` で署名しない |
 | `<機種>.package` | 配布物の形式の配列: `zip` / `tar.gz` / `dir` |
 
@@ -127,6 +139,8 @@ const Texture texture{ U"assets/windmill.png" };
 - Linux: `MyApp` (RPATH = `$ORIGIN`)、`libSDL3.so.0*`、`resources/engine/`、アセット、
   (`SIV3D_WITH_FFMPEG=ON` のとき) FFmpeg の `.so` と `licenses/`
 - macOS: `MyApp.app` (ANGLE の dylib を `Contents/Frameworks` に、リソースとアセットを `Contents/MacOS` に同梱)
+- iOS: `MyApp.app` (平らな構成。実行ファイル・`siv3d_resources/engine/`・アセットを直下に置く。SDL3 は静的リンク)。
+  シミュレータは `.app` の zip、実機は `.ipa`。`.app` の直下に `Resources` という名前のフォルダは置かないでください
 
 macOS は stage のときに `.app` を署名します (既定は ad-hoc 署名)。ad-hoc 署名や未公証の `.app` は、
 ダウンロードした zip から展開すると Gatekeeper に止められるので、一般に配布するには Developer ID での署名と公証が必要です
