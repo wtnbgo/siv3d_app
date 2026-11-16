@@ -63,7 +63,7 @@ make                 # 実行中の OS 向けに build + stage + package
 make windows         # Windows 版 (Windows で)
 make macos           # macOS 版 (macOS で)
 make linux           # Linux 版 (sniper SDK のコンテナでビルド)
-make linux NATIVE=1  # Linux 版をホストで直接ビルド (Linux で。出力は build/linux-native)
+make linux NATIVE=1  # Linux 版をホストで直接ビルド (Linux で。出力は build/linux-native。配布物は *-linux-native.tar.gz で、配布用ではない)
 make web             # Web 版 (どのホストでも。emsdk が必要)
 make android         # Android 版 (どのホストでも。Android SDK / NDK と外枠 siv3d_and が必要)
 make run             # stage した実行ファイルを起動
