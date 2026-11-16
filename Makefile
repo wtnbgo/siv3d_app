@@ -9,9 +9,11 @@
 # -----------------------------------------------------------------------------
 
 # OpenSiv3D の場所: 環境変数 SIV3D_BASE → 隣の ../OpenSiv3D
+# 見つからなければ siv3d-app.json の "siv3d" の版を git で取得する (cmake/FetchSiv3D.cmake、SIV3D_NO_FETCH=1 で無効)
 ifeq ($(SIV3D_BASE),)
   SIV3D_BASE := $(abspath ../OpenSiv3D)
 endif
+CMAKE ?= cmake
 
 ifeq ($(OS),Windows_NT)
   PYTHON ?= python
@@ -23,24 +25,28 @@ CONFIG ?= Release
 DRIVER := $(PYTHON) $(SIV3D_BASE)/tools/siv3d_app.py --project . --config $(CONFIG) $(if $(NATIVE),--native,)
 TARGET_OPT := $(if $(TARGET),--target $(TARGET),)
 
-.PHONY: default windows linux macos web android ios ios-run ios-device build stage package run clean info
+.PHONY: default windows linux macos web android ios ios-run ios-device build stage package run clean info siv3d-base
 
-default:
+default: siv3d-base
 	$(DRIVER) $(TARGET_OPT) all
 
-windows linux macos web android:
+windows linux macos web android: siv3d-base
 	$(DRIVER) --target $@ all
 
 # iOS: シミュレータ (ホストの CPU 向け) で build + stage + package し、起動する場合は make ios-run
-ios:
+ios: siv3d-base
 	$(DRIVER) --target ios --sdk simulator all
 
-ios-run:
+ios-run: siv3d-base
 	$(DRIVER) --target ios --sdk simulator run
 
 # iOS 実機 (arm64)。インストールには siv3d-app.json の ios.team (DEVELOPMENT_TEAM) による署名が要る
-ios-device:
+ios-device: siv3d-base
 	$(DRIVER) --target ios --sdk device all
 
-build stage package run clean info:
+build stage package run clean info: siv3d-base
 	$(DRIVER) $(TARGET_OPT) $@
+
+# OpenSiv3D が無ければ取得する (あれば何もしない)
+siv3d-base:
+	@$(CMAKE) "-DSIV3D_BASE=$(SIV3D_BASE)" -P cmake/FetchSiv3D.cmake

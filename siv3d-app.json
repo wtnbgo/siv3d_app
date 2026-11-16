@@ -6,6 +6,11 @@
   "company": "",
   "copyright": "",
 
+  "siv3d": {
+    "repository": "https://github.com/wtnbgo/OpenSiv3D.git",
+    "ref": "develop_sdl3"
+  },
+
   "assets": [
     { "from": "assets", "to": "assets" }
   ],

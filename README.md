@@ -13,6 +13,7 @@ MyApp/
   CMakeLists.txt     OpenSiv3D を参照して siv3d_add_app() を呼ぶだけ
   siv3d-app.json     パッケージ定義 (表示名・実行ファイル名・バージョン・アセット・機種別の設定)
   Makefile           tools/siv3d_app.py の薄いラッパ
+  cmake/FetchSiv3D.cmake  OpenSiv3D が見つからないときに取得する処理 (CMakeLists.txt と Makefile が使う)
   src/               アプリのソース
   assets/            アプリのアセット (実行ファイルの隣に assets/ としてコピーされる)
   icon/              アイコン (Windows: .ico / macOS: .icns)
@@ -30,11 +31,35 @@ OpenSiv3D (SDL3 版) は [wtnbgo/OpenSiv3D](https://github.com/wtnbgo/OpenSiv3D)
 1. 環境変数 `SIV3D_BASE` (OpenSiv3D リポジトリのルート)
 2. 隣にある `../OpenSiv3D`
 
+**見つからなければ自動で取得します** (`git clone --depth 1`。取得先は環境変数 `SIV3D_BASE` が指定されていれば
+その場所、無ければ `../OpenSiv3D`)。取得する版は `siv3d-app.json` の `siv3d` で指定します。
+
+```json
+"siv3d": {
+  "repository": "https://github.com/wtnbgo/OpenSiv3D.git",
+  "ref": "develop_sdl3"
+}
+```
+
+- `ref` はブランチ名・タグ名・コミット (40 桁の SHA)。ブランチ名は取得した時期で中身が変わるので、
+  再現性が要るならタグかコミットで固定する
+- 取得するのは OpenSiv3D が無いときだけです。すでにある OpenSiv3D は更新しません (手元の作業コピーには触らない)。
+  版を変えたいときは、その OpenSiv3D を `git fetch` / `git checkout` するか、消してから取り直す
+- 浅い clone なので履歴はありません。必要なら取得後に `git fetch --unshallow`
+- 取得には git が要ります。取得しない場合は 環境変数 `SIV3D_NO_FETCH=1` (CMake では `-DSIV3D_FETCH=OFF`)
+- OpenSiv3D ではない中身のあるフォルダがその場所にあるときは、上書きせずにエラーにします
+
+```bash
+git clone https://github.com/wtnbgo/siv3d_app.git MyApp
+cd MyApp
+make            # 隣に OpenSiv3D が無ければ ../OpenSiv3D に取得してからビルド
+```
+
+手元の OpenSiv3D を使う場合は、先に隣に置くか `SIV3D_BASE` で指定します。
+
 ```bash
 git clone -b develop_sdl3 https://github.com/wtnbgo/OpenSiv3D.git
 git clone https://github.com/wtnbgo/siv3d_app.git MyApp
-cd MyApp
-make
 ```
 
 ```
@@ -112,6 +137,7 @@ cmake --build build/dev --config Release
 | `version` | バージョン (`1.2.3`)。Windows のバージョン情報、macOS の CFBundleVersion、配布物のファイル名 |
 | `bundleId` | macOS のバンドル ID |
 | `company` / `copyright` | Windows のバージョン情報、macOS の著作権表示 |
+| `siv3d.repository` / `siv3d.ref` | OpenSiv3D が見つからないときに取得するリポジトリと版 (既定 `https://github.com/wtnbgo/OpenSiv3D.git` / `develop_sdl3`) |
 | `assets` | 実行ファイルの隣にコピーするフォルダ。`[{ "from": "assets", "to": "assets" }]` (`from` はこのフォルダからの相対パス) |
 | `cmake.options` | CMake に渡すオプション (`SIV3D_WITH_MOVIEPLAYER` / `SIV3D_WITH_FFMPEG` など)。機種別の `<機種>.cmake.options` で上書きできる |
 | `windows.console` | `true` でコンソールウィンドウを出す (既定 `false`) |
