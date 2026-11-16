@@ -136,7 +136,7 @@ cmake --build build/dev --config Release
 | `name` | 表示名 (ウィンドウのタイトルではなく、バージョン情報や .app のバンドル名) |
 | `exeName` | 実行ファイル名 (`.exe` / `.app` の名前、配布物のファイル名にも使う) |
 | `version` | バージョン (`1.2.3`)。Windows のバージョン情報、macOS の CFBundleVersion、配布物のファイル名 |
-| `bundleId` | macOS のバンドル ID |
+| `bundleId` | macOS / iOS のバンドル ID (テンプレートは `jp.wamsoft.sample.siv3d`。コピーしたアプリでは自分の ID に変える) |
 | `company` / `copyright` | Windows のバージョン情報、macOS の著作権表示 |
 | `siv3d.repository` / `siv3d.ref` | OpenSiv3D が見つからないときに取得するリポジトリと版 (既定 `https://github.com/wtnbgo/OpenSiv3D.git` / `develop_sdl3`) |
 | `assets` | 実行ファイルの隣にコピーするフォルダ。`[{ "from": "assets", "to": "assets" }]` (`from` はこのフォルダからの相対パス) |
@@ -174,14 +174,13 @@ const Texture texture{ U"assets/windmill.png" };
    ```json
    {
      "ios": {
-       "team": "ABCDE12345",
-       "bundleId": "com.yourname.myapp"
+       "team": "ABCDE12345"
      }
    }
    ```
 
-   - `bundleId` は、ほかの人のアプリと重ならない ID にします (Personal Team では `com.example.*` は使えません)。
-     チーム全員で同じ ID を使うなら `siv3d-app.json` の `ios.bundleId` に書いてコミットしてもかまいません。
+   - バンドル ID は `siv3d-app.json` の `bundleId` (テンプレートは `jp.wamsoft.sample.siv3d`) です。ほかのアプリと重ならない ID にします
+     (Personal Team では `com.example.*` は使えません)。開発者ごとに変えたい場合だけ、`siv3d-app.local.json` の `ios.bundleId` で上書きします。
    - 環境変数 `SIV3D_IOS_TEAM=ABCDE12345` でも設定できます (CI など)。
 4. **iPhone / iPad を準備する**: USB (または同じネットワーク) で Mac に接続し、「このコンピュータを信頼」を選びます。
    iOS 16 以降は 設定 > プライバシーとセキュリティ > **デベロッパモード** をオンにします (オフだとインストールできません)。

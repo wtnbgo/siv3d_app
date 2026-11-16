@@ -2,7 +2,7 @@
   "name": "My App",
   "exeName": "MyApp",
   "version": "1.0.0",
-  "bundleId": "com.example.myapp",
+  "bundleId": "jp.wamsoft.sample.siv3d",
   "company": "",
   "copyright": "",
 
