@@ -216,6 +216,8 @@ App Store / TestFlight への提出 (Archive と App Store Connect 用の書き�
 macOS は stage のときに `.app` を署名します (既定は ad-hoc 署名)。ad-hoc 署名や未公証の `.app` は、
 ダウンロードした zip から展開すると Gatekeeper に止められるので、一般に配布するには Developer ID での署名と公証が必要です
 (公証はまだドライバで行いません)。Windows の Authenticode 署名も未対応です。
+各機種の配布用の署名 (Windows の signtool、macOS の Developer ID と公証、iOS の App Store Connect 向けの書き出し、
+Android の配布用の鍵と AAB) の手順は、OpenSiv3D の [`SDL3/SIGNING.md`](https://github.com/wtnbgo/OpenSiv3D/blob/develop_sdl3/SDL3/SIGNING.md) にまとめています。
 
 テンプレートのビルドは OpenSiv3D 一式をアプリのビルドツリー (`build/<機種>/cmake`) でビルドするため、
 1 機種あたり数 GB のディスクを使います。
