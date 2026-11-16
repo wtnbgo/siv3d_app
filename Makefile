@@ -3,7 +3,7 @@
 #
 #   make                 実行中の OS 向けに build + stage + package
 #   make windows|linux|macos|web|android   指定した機種向けに build + stage + package
-#   make ios / ios-run / ios-device   iOS シミュレータ (ビルド / 起動) / 実機 (arm64)
+#   make ios / ios-run / ios-device / ios-device-run   iOS シミュレータ (ビルド / 起動) / 実機 (ビルド / 起動)
 #   make build|stage|package|run|clean|info [TARGET=windows|linux|macos|web|android] [CONFIG=Release|Debug]
 #   make linux NATIVE=1  Linux ホストでコンテナを使わずにビルド
 # -----------------------------------------------------------------------------
@@ -25,7 +25,7 @@ CONFIG ?= Release
 DRIVER := $(PYTHON) $(SIV3D_BASE)/tools/siv3d_app.py --project . --config $(CONFIG) $(if $(NATIVE),--native,)
 TARGET_OPT := $(if $(TARGET),--target $(TARGET),)
 
-.PHONY: default windows linux macos web android ios ios-run ios-device build stage package run clean info siv3d-base
+.PHONY: default windows linux macos web android ios ios-run ios-device ios-device-run build stage package run clean info siv3d-base
 
 default: siv3d-base
 	$(DRIVER) $(TARGET_OPT) all
@@ -40,9 +40,13 @@ ios: siv3d-base
 ios-run: siv3d-base
 	$(DRIVER) --target ios --sdk simulator run
 
-# iOS 実機 (arm64)。インストールには siv3d-app.json の ios.team (DEVELOPMENT_TEAM) による署名が要る
+# iOS 実機 (arm64)。署名に Team ID が要る (siv3d-app.local.json の ios.team または環境変数 SIV3D_IOS_TEAM)
 ios-device: siv3d-base
 	$(DRIVER) --target ios --sdk device all
+
+# iOS 実機にインストールして起動する (DEVICE=<UDID または名前> で指定。省略時は接続中の 1 台)
+ios-device-run: siv3d-base
+	$(DRIVER) --target ios --sdk device $(if $(DEVICE),--device "$(DEVICE)",) run
 
 build stage package run clean info: siv3d-base
 	$(DRIVER) $(TARGET_OPT) $@

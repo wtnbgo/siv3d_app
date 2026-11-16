@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "team": "ABCDE12345",
+    "bundleId": "com.yourname.myapp",
+    "device": ""
+  }
+}

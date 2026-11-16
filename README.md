@@ -93,7 +93,8 @@ make web             # Web 版 (どのホストでも。emsdk が必要)
 make android         # Android 版 (どのホストでも。Android SDK / NDK と外枠 siv3d_and が必要)
 make ios             # iOS 版 (macOS で。シミュレータ向け。Xcode が必要)
 make ios-run         # iOS シミュレータにインストールして起動
-make ios-device      # iOS 実機 (arm64) 向け。ipa を作る (インストールには ios.team の署名が必要)
+make ios-device      # iOS 実機 (arm64) 向け。ipa を作る (署名に Team ID が必要。下の「iOS 実機で動かす」)
+make ios-device-run  # iOS 実機にインストールして起動 (DEVICE=<UDID または名前> で端末を選べる)
 make run             # stage した実行ファイルを起動
 make build CONFIG=Debug
 make clean TARGET=windows
@@ -149,7 +150,8 @@ cmake --build build/dev --config Release
 | `ios.deploymentTarget` | 対応する iOS の最低バージョン (既定 `15.0`) |
 | `ios.orientations` | 画面の向き: `"landscape"` (既定) / `"portrait"` / `"all"`、または `UIInterfaceOrientation*` の配列 |
 | `ios.deviceFamily` | `"1,2"` (iPhone と iPad、既定) / `"1"` / `"2"` |
-| `ios.team` | 実機の署名に使う Apple Developer の Team ID (シミュレータは不要) |
+| `ios.team` | 実機の署名に使う Apple Developer の Team ID (シミュレータは不要)。コミットしたくない場合は `siv3d-app.local.json` に書く |
+| `ios.device` | `make ios-device-run` でインストールする実機 (UDID または名前)。普通は `siv3d-app.local.json` に書く |
 | `macos.sign` | 署名に使う ID。既定 `"-"` (ad-hoc 署名。Apple Silicon では署名が無いと起動できない)。配布用は `"Developer ID Application: ..."`、`false` で署名しない |
 | `<機種>.package` | 配布物の形式の配列: `zip` / `tar.gz` / `dir` |
 
@@ -158,6 +160,50 @@ cmake --build build/dev --config Release
 ```cpp
 const Texture texture{ U"assets/windmill.png" };
 ```
+
+## iOS 実機で動かす
+
+実機で動かすには、Apple Developer の **Team ID** による署名が必要です (無料の Apple ID の Personal Team でも、7 日間有効な署名で動かせます)。
+
+1. **Xcode にサインインする**: Xcode > Settings > Accounts で、Team に入っている Apple ID を追加します。
+2. **Team ID を調べる**: Accounts の Team の一覧 (Personal Team は「(Personal Team)」の行)、または
+   [Apple Developer のメンバーシップ](https://developer.apple.com/account) の「Team ID」(英数字 10 文字)。
+3. **Team ID を設定する**: アプリのフォルダに `siv3d-app.local.json` を作ります (`.gitignore` 済みでコミットされません)。
+   `siv3d-app.local.json.example` をコピーして書き換えてください。中身は `siv3d-app.json` に重ねて読まれます。
+
+   ```json
+   {
+     "ios": {
+       "team": "ABCDE12345",
+       "bundleId": "com.yourname.myapp"
+     }
+   }
+   ```
+
+   - `bundleId` は、ほかの人のアプリと重ならない ID にします (Personal Team では `com.example.*` は使えません)。
+     チーム全員で同じ ID を使うなら `siv3d-app.json` の `ios.bundleId` に書いてコミットしてもかまいません。
+   - 環境変数 `SIV3D_IOS_TEAM=ABCDE12345` でも設定できます (CI など)。
+4. **iPhone / iPad を準備する**: USB (または同じネットワーク) で Mac に接続し、「このコンピュータを信頼」を選びます。
+   iOS 16 以降は 設定 > プライバシーとセキュリティ > **デベロッパモード** をオンにします (オフだとインストールできません)。
+5. **ビルドしてインストールする**:
+
+   ```bash
+   make ios-device       # build/ios/device-arm64/ に署名済みの .app と .ipa を作る (初回は Team への端末登録とプロファイル作成も行う)
+   make ios-device-run   # 接続中の端末にインストールして起動 (DEVICE=<UDID または名前> で端末を選べる)
+   ```
+
+   接続中の端末の一覧は `xcrun devicectl list devices` で見られます。
+6. **初回だけ**: Personal Team や Development 署名のアプリは、端末の 設定 > 一般 > VPN とデバイス管理 で
+   デベロッパ App を「信頼」するまで起動できません。
+
+うまくいかないとき:
+
+- `No Account for Team` / `No profiles for ...`: Xcode にその Team の Apple ID でサインインしているか確認する
+- `Failed Registering Bundle Identifier`: `bundleId` がほかで使われている。別の ID にする
+- `Developer Mode disabled`: 端末のデベロッパモードをオンにする (オンにすると端末が再起動する)
+
+App Store / TestFlight への提出 (Archive と App Store Connect 用の書き出し) は、まだドライバでは行いません。
+`build/ios/device-arm64/cmake/*.xcodeproj` を Xcode で開いて Product > Archive を使ってください。
 
 ## 配布物の中身
 
