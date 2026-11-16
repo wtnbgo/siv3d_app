@@ -14,7 +14,7 @@ MyApp/
   siv3d-app.json     パッケージ定義 (表示名・実行ファイル名・バージョン・アセット・機種別の設定)
   Makefile           tools/siv3d_app.py の薄いラッパ
   cmake/FetchSiv3D.cmake  OpenSiv3D が見つからないときに取得する処理 (CMakeLists.txt と Makefile が使う)
-  src/               アプリのソース
+  src/               アプリのソース (Main.cpp、LicenseView.hpp: ライセンス一覧の表示)
   assets/            アプリのアセット (実行ファイルの隣に assets/ としてコピーされる)
   icon/              アイコン (Windows: .ico / macOS: .icns)
   build/<機種>/       出力 (git 管理外)
@@ -221,6 +221,8 @@ Android の配布用の鍵と AAB) の手順は、OpenSiv3D の [`SDL3/SIGNING.m
 
 ライセンス表記 (エンジンに内蔵のライセンス一覧、F1 キーでの表示、Android / iOS ではアプリ内のライセンス画面が必要なこと、
 Linux の FFmpeg の同梱物) は、OpenSiv3D の [`SDL3/LICENSES.md`](https://github.com/wtnbgo/OpenSiv3D/blob/develop_sdl3/SDL3/LICENSES.md) を参照してください。
+テンプレートの右下の [Licenses] ボタンは、Android / iOS ではアプリ内にライセンス一覧を表示し (`src/LicenseView.hpp`)、
+それ以外の機種ではブラウザで開きます (F1 キーと同じ)。アプリに合わせて置き場所や見た目を変えてください。
 
 テンプレートのビルドは OpenSiv3D 一式をアプリのビルドツリー (`build/<機種>/cmake`) でビルドするため、
 1 機種あたり数 GB のディスクを使います。
