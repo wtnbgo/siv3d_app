@@ -51,6 +51,10 @@ work/
 - Linux 版をビルドする場合: コンテナ (Windows は docker または WSL の `wslc`、macOS / Linux は docker) と
   sniper SDK のイメージ `deckbuild-sniper` ([steamdev](https://github.com/wamsoft/steamdev) の `deckbuild/` で作る。
   docker なら `deckbuild.sh image`、wslc なら `wslc build -t deckbuild-sniper <steamdev>/deckbuild`)
+- Linux 版をホストで直接ビルドする場合 (`NATIVE=1`): `uuid-dev` が必須 (sniper SDK には入っている)。
+  加えて、無くてもビルドは通るが SDL3 の機能が欠けるもの: `libpulse-dev` / `libpipewire-0.3-dev` (無いと音声が
+  ALSA / JACK だけになる)、`libdecor-0-dev` (無いと GNOME の Wayland でウィンドウの枠が出ない)、`libibus-1.0-dev` (IME)。
+  ほかに `libwayland-dev` / `libx11-dev` 系 / `libegl-dev` / `libdbus-1-dev` / `libudev-dev` / `libasound2-dev`
 
 ## ビルド
 
