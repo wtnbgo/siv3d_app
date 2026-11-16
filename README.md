@@ -92,6 +92,8 @@ cmake --build build/dev --config Release
 
 - Web: 環境変数 `EMSDK` (emsdk のフォルダ)。出力は `<exeName>.html` / `.js` / `.wasm` / `.data`。配信には COOP/COEP ヘッダが必要
   (`make run TARGET=web` で確認用サーバを起動。詳しくは OpenSiv3D の `SDL3/BUILD-Web.md`)
+  セーブデータは `FileSystem::GetFolderPath(SpecialFolder::Documents)` などホームフォルダの下に書くと、ブラウザの IndexedDB に
+  自動で保存され、次に開いたときに読み込まれる (`web.persist` を `false` にすると無効。カレントディレクトリ直下は保存されない)
 - Android: 外枠 [siv3d_and](https://github.com/wtnbgo/siv3d_and) を OpenSiv3D の隣に clone する (または環境変数 `SIV3D_ANDROID`)。
   `ANDROID_HOME` / `JAVA_HOME` / `VCPKG_ROOT` が必要。出力は `<exeName>.apk`
 
