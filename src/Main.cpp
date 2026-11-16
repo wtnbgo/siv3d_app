@@ -8,6 +8,9 @@ void Main()
 	const Texture texture{ U"assets/windmill.png" };
 	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 
+	// アプリが同梱するフォントや素材のライセンスを、assets/licenses/*.txt から一覧に追加する (assets/licenses/README.md)
+	LicenseManager::AddLicenseFiles(U"assets/licenses");
+
 	// ライセンス一覧 (Android / iOS はアプリ内に表示、それ以外はブラウザで開く。LicenseView.hpp を参照)
 	LicenseView licenseView;
 

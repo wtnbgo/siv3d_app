@@ -16,6 +16,7 @@ MyApp/
   cmake/FetchSiv3D.cmake  OpenSiv3D が見つからないときに取得する処理 (CMakeLists.txt と Makefile が使う)
   src/               アプリのソース (Main.cpp、LicenseView.hpp: ライセンス一覧の表示)
   assets/            アプリのアセット (実行ファイルの隣に assets/ としてコピーされる)
+    licenses/        アプリが追加するライセンス (*.txt。起動時に一覧へ追加。形式は assets/licenses/README.md)
   icon/              アイコン (Windows: .ico / macOS: .icns)
   build/<機種>/       出力 (git 管理外)
     cmake/           CMake のビルドツリー
@@ -223,6 +224,9 @@ Android の配布用の鍵と AAB) の手順は、OpenSiv3D の [`SDL3/SIGNING.m
 Linux の FFmpeg の同梱物) は、OpenSiv3D の [`SDL3/LICENSES.md`](https://github.com/wtnbgo/OpenSiv3D/blob/develop_sdl3/SDL3/LICENSES.md) を参照してください。
 テンプレートの右下の [Licenses] ボタンは、Android / iOS ではアプリ内にライセンス一覧を表示し (`src/LicenseView.hpp`)、
 それ以外の機種ではブラウザで開きます (F1 キーと同じ)。アプリに合わせて置き場所や見た目を変えてください。
+アプリが同梱するフォントや素材のライセンスは、`assets/licenses/` に 1 件 1 ファイル (`Title:` / `Copyright:` と本文) で置くと、
+起動時の `LicenseManager::AddLicenseFiles(U"assets/licenses")` で一覧に追加されます。エンジン同梱のフォント (Noto Sans CJK、
+M+、Font Awesome) のライセンスを最初から置いてあります。
 
 テンプレートのビルドは OpenSiv3D 一式をアプリのビルドツリー (`build/<機種>/cmake`) でビルドするため、
 1 機種あたり数 GB のディスクを使います。
