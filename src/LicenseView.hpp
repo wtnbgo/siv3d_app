@@ -86,12 +86,17 @@ public:
 		// 右端 (スクロールバーの帯) をドラッグすると、その位置へ直接移動する (長い一覧を素早く送るため)
 		const RectF scrollStrip{ (area.rightX() - ScrollStripWidth), area.y, ScrollStripWidth, area.h };
 
+		const double cursorY = Cursor::PosF().y;
+
 		if (MouseL.down() && area.mouseOver())
 		{
 			m_dragging = true;
 			m_draggingBar = scrollStrip.mouseOver();
+			// ドラッグを始めた位置を覚える。タッチでは指を離した位置から次に触れた位置へカーソルが飛ぶので、
+			// Cursor::DeltaF() を使うと、触れた瞬間の移動量で直前のスクロールが打ち消されてしまう
+			m_lastDragY = cursorY;
 		}
-		else if (MouseL.up())
+		else if (not MouseL.pressed())
 		{
 			m_dragging = false;
 			m_draggingBar = false;
@@ -99,11 +104,12 @@ public:
 
 		if (m_draggingBar)
 		{
-			m_scroll = (Clamp((Cursor::PosF().y - area.y) / area.h, 0.0, 1.0) * maxScroll);
+			m_scroll = (Clamp((cursorY - area.y) / area.h, 0.0, 1.0) * maxScroll);
 		}
 		else if (m_dragging)
 		{
-			m_scroll -= Cursor::DeltaF().y;
+			m_scroll -= (cursorY - m_lastDragY);
+			m_lastDragY = cursorY;
 		}
 
 		m_scroll = Clamp(m_scroll, 0.0, maxScroll);
@@ -179,6 +185,8 @@ private:
 	bool m_dragging = false;
 
 	bool m_draggingBar = false;
+
+	double m_lastDragY = 0.0;
 
 	[[nodiscard]]
 	double advance(const char32 ch, const double size)
