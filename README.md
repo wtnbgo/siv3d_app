@@ -219,5 +219,8 @@ macOS は stage のときに `.app` を署名します (既定は ad-hoc 署名)
 各機種の配布用の署名 (Windows の signtool、macOS の Developer ID と公証、iOS の App Store Connect 向けの書き出し、
 Android の配布用の鍵と AAB) の手順は、OpenSiv3D の [`SDL3/SIGNING.md`](https://github.com/wtnbgo/OpenSiv3D/blob/develop_sdl3/SDL3/SIGNING.md) にまとめています。
 
+ライセンス表記 (エンジンに内蔵のライセンス一覧、F1 キーでの表示、Android / iOS ではアプリ内のライセンス画面が必要なこと、
+Linux の FFmpeg の同梱物) は、OpenSiv3D の [`SDL3/LICENSES.md`](https://github.com/wtnbgo/OpenSiv3D/blob/develop_sdl3/SDL3/LICENSES.md) を参照してください。
+
 テンプレートのビルドは OpenSiv3D 一式をアプリのビルドツリー (`build/<機種>/cmake`) でビルドするため、
 1 機種あたり数 GB のディスクを使います。
