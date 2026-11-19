@@ -31,6 +31,16 @@
     "container": "deckbuild-sniper",
     "package": ["tar.gz"]
   },
+  "rpmini": {
+    "container": "deckbuild-rpmini",
+    "device": "root@192.168.7.2",
+    "package": ["tar.gz"],
+    "cmake": {
+      "options": {
+        "SIV3D_WITH_FFMPEG": "OFF"
+      }
+    }
+  },
   "macos": {
     "icon": "icon/icon.icns",
     "package": ["zip"]
